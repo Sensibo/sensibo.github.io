@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  title: Sensibo API
+  version: 2.0.0
+  contact:
+    name: Sensibo's official facebook group
+    url: https://facebook.com/groups/sensibo
+  description: Sensibo API gives you access to create rich integrations and script with air conditioners and heat pumps.<br><br><b>Frequently asked questions</b><br><ul><li><b>Get all devices and info</b><br>curl -X GET "https://home.sensibo.com/api/v2/users/me/pods?fields=*&apiKey={api_key}"<li><b>Turn on the AC</b><br>curl -X POST "https://home.sensibo.com/api/v2/pods/{device_id}/acStates?apiKey={api_key}" -d "{\"acState\":{\"on\":true}}" </li><li><b>Turn off the AC</b><br>curl -X POST "https://home.sensibo.com/api/v2/pods/{device_id}/acStates?apiKey={api_key}" -d "{\"acState\":{\"on\":false}}" </li> </ul>
+
+servers:
+  - url: https://home.sensibo.com/api/v2
+
+paths:
+  /users/me/pods:
+    get:
+      description: Get all devices.
+      parameters:
+        - name: fields
+          in: query
+          description: comma separated fields to retrieve or * for all
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Successful response
+
+  '/pods/{device_id}':
+    get:
+      description: Get the device info of a specific.
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: comma separated fields to retrieve or * for all
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+  '/pods/{device_id}/acStates':
+    get:
+      description: Get the air conditioner state (and previous) for this device
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: number of states to retrieve. Max=20
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    post:
+      description: Set the air conditioner state for this device
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/acStateObject'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns when command actually happened
+  '/pods/{device_id}/acStates/{property}':
+    patch:
+      description: Change only one property of the air conditioner state for this device
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: property
+          in: path
+          description: 'The property to change (e.g., targetTemperature)'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newValueObject'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns historical measurements
+  '/pods/{device_id}/historicalMeasurements':
+    get:
+      description: Retrieve the measurements from the device up to 7 days
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: days
+          in: query
+          description: number of days, default is 1
+          schema:
+            type: integer
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns when command actually happened
+  '/pods/{device_id}/smartmode':
+    get:
+      description: Get the Climate React settings
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    put:
+      description: enable or disable Climate React
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                enabled:
+                  description: whether to enable or disable Climate React
+                  type: boolean
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns when command actually happened
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      in: query
+      name: apiKey
+
+  schemas:
+    acStateObject:
+      required:
+        - acState
+      properties:
+        acState:
+          $ref: '#/components/schemas/acState'
+    acState:
+      type: object
+      required:
+        - on
+        - mode
+        - fanLevel
+        - targetTemperature
+        - temperatureUnit
+      properties:
+        on:
+          type: boolean
+          description: true for on, false for off
+        mode:
+          type: string
+          description: 'one of modes in remoteCapabilities ("cool", "heat", "fan", "auto", "dry")'
+        fanLevel:
+          type: string
+          description: 'one of fan levels in remoteCapabilities (e.g., "low", "medium", "high", "auto")'
+        targetTemperature:
+          type: integer
+          description: target temperature
+        temperatureUnit:
+          type: string
+          description: "'C' for Celsius or 'F' for Fahrenheit"
+        swing:
+          type: string
+          description: 'one of the swing states in remoteCapabilities (e.g., "stopped", "rangeful")'
+    newValueObject:
+      type: object
+      required:
+        - newValue
+        - currentAcState
+      properties:
+        newValue:
+          type: string
+          description: the new value
+        currentAcState:
+          $ref: '#/components/schemas/acStateObject'
+
