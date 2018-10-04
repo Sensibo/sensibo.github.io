@@ -214,6 +214,8 @@ paths:
         '200':
           description: Success
   '/pods/{device_id}/schedules/':
+    servers:
+      - url: https://home.sensibo.com/api/v1/
     get:
       description: Get the scheduled items
       parameters:
@@ -248,6 +250,8 @@ paths:
         '200':
           description: Success
   '/pods/{device_id}/schedules/{schedule_id}/':
+    servers:
+      - url: https://home.sensibo.com/api/v1/
     get:
       description: Get a specific schedule
       parameters:
