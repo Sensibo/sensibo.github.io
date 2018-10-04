@@ -170,6 +170,152 @@ paths:
       responses:
         '200':
           description: Success
+  '/pods/{device_id}/timer/':
+    get:
+      description: Get the current timer
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    delete:
+      description: delete a timer
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+    put:
+      description: set a timer
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/timerObject'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+  '/pods/{device_id}/schedules/':
+    get:
+      description: Get the scheduled items
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    post:
+      description: create a new schedule
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/scheduleObject'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+  '/pods/{device_id}/schedules/{schedule_id}/':
+    get:
+      description: Get a specific schedule
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: schedule_id
+          in: path
+          description: schedule id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    delete:
+      description: Delete a specific schedule
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: schedule_id
+          in: path
+          description: schedule id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+    put:
+      description: Enable or disable a specific schedule
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+        - name: schedule_id
+          in: path
+          description: schedule id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                isEnabled:
+                  description: whether to enable or disable the schedule
+                  type: boolean
+      responses:
+        '200':
+          description: Success
 
 components:
   securitySchemes:
@@ -222,4 +368,34 @@ components:
           description: the new value
         currentAcState:
           $ref: '#/components/schemas/acStateObject'
+    timerObject:
+      type: object
+      required:
+        - minutesFromNow
+        - acState
+      properties:
+        minutesFromNow:
+          type: integer
+          description: fire the timer in X minutes
+        acState:
+          $ref: '#/components/schemas/acStateObject'
+
+    scheduleObject:
+      type: object
+      required:
+        - targetTimeLocal
+        - timezone
+        - acState
+        - recurOnDaysOfWeek
+      properties:
+        targetTimeLocal:
+          type: string
+          description: time in 24 hour format. e.g., 22:15 for ten fifteen pm
+        timezone:
+          type: string
+          description: timezone for the user (e.g., Europe/Oslo)
+        acState:
+          $ref: '#/components/schemas/acStateObject'
+        recurOnDAysOfWeek:
+          description: a list of days the schedule is recurring (e.g., ["sunday", "tuesday"]). Empty list if not recurring
 
