@@ -371,7 +371,7 @@ components:
           type: string
           description: the new value
         currentAcState:
-          $ref: '#/components/schemas/acStateObject'
+          $ref: '#/components/schemas/acState'
     timerObject:
       type: object
       required:
@@ -382,7 +382,7 @@ components:
           type: integer
           description: fire the timer in X minutes
         acState:
-          $ref: '#/components/schemas/acStateObject'
+          $ref: '#/components/schemas/acState'
 
     scheduleObject:
       type: object
@@ -399,7 +399,7 @@ components:
           type: string
           description: timezone for the user (e.g., Europe/Oslo)
         acState:
-          $ref: '#/components/schemas/acStateObject'
+          $ref: '#/components/schemas/acState'
         recurOnDAysOfWeek:
           description: a list of days the schedule is recurring (e.g., ["sunday", "tuesday"]). Empty list if not recurring
 
