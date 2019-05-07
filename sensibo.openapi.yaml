@@ -365,13 +365,10 @@ components:
       type: object
       required:
         - newValue
-        - currentAcState
       properties:
         newValue:
           type: string
           description: the new value
-        currentAcState:
-          $ref: '#/components/schemas/acState'
     timerObject:
       type: object
       required:
