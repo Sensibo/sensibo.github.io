@@ -149,7 +149,7 @@ paths:
         '200':
           description: Success
     put:
-      description: enable or disable Climate React
+      description: Enable or disable Climate React
       parameters:
         - name: device_id
           in: path
@@ -188,7 +188,7 @@ paths:
         '200':
           description: Success
     delete:
-      description: delete a timer
+      description: Delete a timer
       parameters:
         - name: device_id
           in: path
@@ -197,7 +197,7 @@ paths:
           schema:
             type: string
     put:
-      description: set a timer
+      description: Set a timer
       parameters:
         - name: device_id
           in: path
@@ -401,4 +401,3 @@ components:
           $ref: '#/components/schemas/acState'
         recurOnDAysOfWeek:
           description: a list of days the schedule is recurring (e.g., ["sunday", "tuesday"]). Empty list if not recurring
-
