@@ -399,5 +399,5 @@ components:
           description: timezone for the user (e.g., Europe/Oslo)
         acState:
           $ref: '#/components/schemas/acState'
-        recurOnDAysOfWeek:
+        recurOnDaysOfWeek:
           description: a list of days the schedule is recurring (e.g., ["sunday", "tuesday"]). Empty list if not recurring
