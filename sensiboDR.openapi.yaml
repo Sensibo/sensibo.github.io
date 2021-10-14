@@ -46,7 +46,7 @@ paths:
           description: Success. Returns the created object
 
     get:
-      description: Get specific event info
+      description: Get a specific event info
       parameters:
         - name: uid
           in: path
@@ -99,12 +99,12 @@ paths:
           application/json:
             schema:
               properties:
-                add_uids:
+                devices_to_add:
                   description: List of device uids to add to event
                   type: array
                   items:
                     type: string
-                remove_uids:
+                devices_to_remove:
                   description: List of device uids to remove from event
                   type: array
                   items:
@@ -138,39 +138,34 @@ components:
     eventCreate:
       type: object
       required:
-        - name
         - startTime
         - duration
       properties:
-        name:
-          type: string
-          description: The user defined name of the Demand Response event
-        notes:
-          type: string
-          description: Optional user comments regarding the event
         startTime:
-          description: The start time of the DR event (in UTC)
-          format: date-time
+          description: The start time (in UTC) of the DR event (2021-10-14T12:51:37Z)
+          format: string
         duration:
           type: integer
           description: The duration of the DR event (in minutes)
         startTimeWindow:
           type: integer
-          default: 2700
+          default: 300
           description: The number of seconds around the startTime in which the Event will start
         endTimeWindow:
           type: integer
           description: The number of seconds around the endTime in which the Event will end
-          default: 2700
+          default: 300
         executionStrategy:
           type: string
-          enum: [turn_off, set_fan, adjust_temperature, custom]
-          description: The action performed on the customer's device during the DR event
+          description: The action performed on the customer's device during the DR event, e.g. "minimum_cooling_to_24"
         devices:
           description: List of participating devices
           type: array
           items:
             type: string
+        description:
+          type: string
+          description: Optional user comments regarding the event
     event:
       allOf:
         - $ref: '#/components/schemas/eventCreate'
@@ -194,7 +189,7 @@ components:
         uid:
           type: string
           description: The uid of the event
-        all:
+        allDevices:
           description: List of device uids in event
           type: array
           items:
@@ -209,7 +204,7 @@ components:
           type: array
           items:
             type: string
-        failure:
+        failed:
           description: List of device uids that matched the strategy, but sending the command failed
           type: array
           items:
