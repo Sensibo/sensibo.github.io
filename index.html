@@ -1,24 +1,20 @@
-<!DOCTYPE html>
+<!doctype html> <!-- Important: must specify -->
 <html>
-  <head>
-    <title>Sensibo API</title>
-    <!-- needed for adaptive design -->
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+<head>
+  <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 charecters -->
+  <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+</head>
+<body>
+  <rapi-doc
+    spec-url="https://sensibo.github.io/sensibo.openapi.yaml"
+    theme = "light"
+    show-header	= false
+    primary-color = #21c1a2
+    allow-try = false
+  >
+  <img slot="nav-logo" src="https://sensibo.github.io/logo.png"/>
+  <img slot="logo" src="https://sensibo.github.io/logo.png"/>
 
-    <!--
-    ReDoc doesn't change outer page styles
-    -->
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <redoc spec-url='/sensibo.openapi.yaml'></redoc>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
-  </body>
+  </rapi-doc>
+</body>
 </html>
