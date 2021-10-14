@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Sensibo Demand Response API
+  version: 1.0.5
+
+servers:
+  - url: https://home.sensibo.com/api/v3
+
+paths:
+  /event:
+    post:
+      description: Creates a Demand Response Event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/eventCreate'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns the created object
+
+  '/event/{uid}':
+    put:
+      description: Modify the event
+      parameters:
+        - name: uid
+          in: path
+          description: event unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/eventCreate'
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns the created object
+
+    get:
+      description: Get specific event info
+      parameters:
+        - name: uid
+          in: path
+          description: event unique id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+
+  '/event/{uid}/report':
+    get:
+      description: Get a detailed event report
+      parameters:
+        - name: uid
+          in: path
+          description: event unique id
+          required: true
+          schema:
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/eventReport'
+
+  '/event/{uid}/devices':
+    put:
+      description: Modify the participating devices
+      parameters:
+        - name: uid
+          in: path
+          description: event unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                add_uids:
+                  description: List of device uids to add to event
+                  type: array
+                  items:
+                    type: string
+                remove_uids:
+                  description: List of device uids to remove from event
+                  type: array
+                  items:
+                    type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success. Returns the created object
+
+
+  /events:
+    get:
+      description: Get all Demand Response programs
+      responses:
+        '200':
+          description: List of event uids sorted from last to first
+          content:
+            application/json:
+              schema:
+                properties:
+                  uids:
+                    description: List of device uids to add to event
+                    type: array
+                    items:
+                      type: string
+
+
+components:
+  schemas:
+    eventCreate:
+      type: object
+      required:
+        - name
+        - startTime
+        - duration
+      properties:
+        name:
+          type: string
+          description: The user defined name of the Demand Response event
+        notes:
+          type: string
+          description: Optional user comments regarding the event
+        startTime:
+          description: The start time of the DR event (in UTC)
+          format: date-time
+        duration:
+          type: integer
+          description: The duration of the DR event (in minutes)
+        startTimeWindow:
+          type: integer
+          default: 2700
+          description: The number of seconds around the startTime in which the Event will start
+        endTimeWindow:
+          type: integer
+          description: The number of seconds around the endTime in which the Event will end
+          default: 2700
+        executionStrategy:
+          type: string
+          enum: [turn_off, set_fan, adjust_temperature, custom]
+          description: The action performed on the customer's device during the DR event
+        devices:
+          description: List of participating devices
+          type: array
+          items:
+            type: string
+    event:
+      allOf:
+        - $ref: '#/components/schemas/eventCreate'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [pending, started, ended]
+              description: The current state of the event
+            uid:
+              type: string
+              description: The uid of the event
+
+    eventReport:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, started, ended]
+          description: The current state of the event
+        uid:
+          type: string
+          description: The uid of the event
+        all:
+          description: List of device uids in event
+          type: array
+          items:
+            type: string
+        nonEligable:
+          description: List of device uids that didn't match the strategy, e.g. were off
+          type: array
+          items:
+            type: string
+        successful:
+          description: List of device uids that matched the strategy, received a command, and stayed until the end of the event
+          type: array
+          items:
+            type: string
+        failure:
+          description: List of device uids that matched the strategy, but sending the command failed
+          type: array
+          items:
+            type: string
+        disconnectedAtEnd:
+          description: List of device uids that matched the strategy, received a command, but were disconnected at the end
+          type: array
+          items:
+            type: string
+        disconnectedAtStart:
+          description: List of device uids that were disconnect at the beginning of the event
+          type: array
+          items:
+            type: string
+        userIntervened:
+          description: List of device uids that matched the strategy, received a command, but changed the state manually to contradict the strategy
+          type: array
+          items:
+            type: string
