@@ -38,7 +38,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/eventCreate'
+              $ref: '#/components/schemas/eventChange'
       security:
         - api_key: []
       responses:
@@ -84,37 +84,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/eventReport'
 
-  '/event/{uid}/devices':
-    put:
-      description: Modify the participating devices
-      parameters:
-        - name: uid
-          in: path
-          description: event unique id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                devices_to_add:
-                  description: List of device uids to add to event
-                  type: array
-                  items:
-                    type: string
-                devices_to_remove:
-                  description: List of device uids to remove from event
-                  type: array
-                  items:
-                    type: string
-      security:
-        - api_key: []
-      responses:
-        '200':
-          description: Success. Returns the created object
-
 
   /events:
     get:
@@ -127,7 +96,7 @@ paths:
               schema:
                 properties:
                   uids:
-                    description: List of device uids to add to event
+                    description: List of event uids
                     type: array
                     items:
                       type: string
@@ -135,11 +104,8 @@ paths:
 
 components:
   schemas:
-    eventCreate:
+    eventCreationProperties:
       type: object
-      required:
-        - startTime
-        - duration
       properties:
         startTime:
           description: The start time (in UTC) of the DR event (2021-10-14T12:51:37Z)
@@ -166,6 +132,33 @@ components:
         description:
           type: string
           description: Optional user comments regarding the event
+
+    eventCreate:
+      type: object
+      required:
+        - startTime
+        - duration
+        - executionStrategy
+        - devices
+      allOf:
+        - $ref: '#/components/schemas/eventCreationProperties'
+
+    eventChange:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/eventCreationProperties'
+      properties:
+        devicesToAdd:
+          description: List of device uids to add to event
+          type: array
+          items:
+            type: string
+        devicesToRemove:
+          description: List of device uids to remove from event
+          type: array
+          items:
+            type: string
+
     event:
       allOf:
         - $ref: '#/components/schemas/eventCreate'
@@ -194,33 +187,35 @@ components:
           type: array
           items:
             type: string
-        nonEligible:
-          description: List of device uids that didn't match the strategy, e.g. were off
-          type: array
-          items:
-            type: string
-        successful:
-          description: List of device uids that matched the strategy, received a command, and stayed until the end of the event
-          type: array
-          items:
-            type: string
-        failed:
-          description: List of device uids that matched the strategy, but sending the command failed
-          type: array
-          items:
-            type: string
-        disconnectedAtEnd:
-          description: List of device uids that matched the strategy, received a command, but were disconnected at the end
-          type: array
-          items:
-            type: string
-        disconnectedAtStart:
+        diconnectedAtStart:
           description: List of device uids that were disconnect at the beginning of the event
+          # didn't match the strategy, e.g. were off
           type: array
           items:
             type: string
-        userIntervened:
-          description: List of device uids that matched the strategy, received a command, but changed the state manually to contradict the strategy
+        diconnectedAtEnd:
+          description: List of device uids that were disconnect at the end of the event
+          # List of device uids that matched the strategy, received a command, and stayed until the end of the event
+          type: array
+          items:
+            type: string
+        alreadyOptimizedAtStart:
+          description: List of device uids that matched the strategy at the beginning of the event
+          type: array
+          items:
+            type: string
+        OptimizedAtEnd:
+          description: List of device uids that matched the strategy until the end of the event
+          type: array
+          items:
+            type: string
+        notOptimizedAtStart:
+          description: List of device uids that didn't match the strategy at the beginning of the event
+          type: array
+          items:
+            type: string
+        notOptimizedAtEnd:
+          description: List of device uids that didn't match the strategy at the end of the event
           type: array
           items:
             type: string
