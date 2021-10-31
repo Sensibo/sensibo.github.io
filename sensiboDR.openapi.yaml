@@ -161,7 +161,7 @@ components:
 
     event:
       allOf:
-        - $ref: '#/components/schemas/eventCreate'
+        - $ref: '#/components/schemas/eventCreationProperties'
         - type: object
           properties:
             status:
