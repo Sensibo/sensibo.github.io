@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Sensibo Demand Response API
   version: 1.0.5
-  description: <h1>Description</h1> <p>The Sensibo Demand Response API is designed for orchestrating large scale smart grid events. <br>The orchestrator schedules an event and selects the participating audience and desired strategy.<br>The will start executing at the specified time and will control the state of the eligible devices.<br>During the event and after, a detailed report will be available for monitoring and analysis. <br><br>An <b>event strategy</b> is the algorithm for deciding which devices to control and in what way. For example, a strategy may be to take all devices that are cooling to a target temperature of below 24 degrees and increase the target temperature to exactly 24 degrees. In the end of the event the devices will revert to their previous state.</p>
+  description: <h1>Description</h1> <p>The Sensibo Demand Response API is designed for orchestrating large scale smart grid events. <br>The orchestrator schedules an event and selects the participating audience and desired strategy.<br>The event will start executing at the specified time and will control the state of the eligible devices.<br>During the event and after, a detailed report will be available for monitoring and analysis. <br><br>An <b>event strategy</b> is the algorithm for deciding which devices to control and in what way. For example, a strategy may be to take all devices that are cooling to a target temperature of below 24 degrees and increase the target temperature to exactly 24 degrees. In the end of the event the devices will revert to their previous state.</p>
   x-logo:
     url: https://sensibo.github.io/logo.png
 
