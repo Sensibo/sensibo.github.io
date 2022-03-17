@@ -201,7 +201,7 @@ paths:
                   type: object
               example:
                 enabled: true
-                lowTemperatureThreshold: 21
+                lowTemperatureThreshold: 22
                 lowTemperatureState: {"on": false}
                 highTemperatureThreshold: 25
                 highTemperatureState: {"on": true, mode: "cool"}
