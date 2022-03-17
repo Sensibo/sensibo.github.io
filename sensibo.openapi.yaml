@@ -170,6 +170,47 @@ paths:
       responses:
         '200':
           description: Success
+    post:
+      description: Set Climate React configuration
+      parameters:
+        - name: device_id
+          in: path
+          description: device unique id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                enabled:
+                  description: whether to enable or disable Climate React
+                  type: boolean
+                lowTemperatureThreshold:
+                  description: low threshold to trigger Climate React
+                  type: number
+                lowTemperatureState:
+                  description: desired state when low threshold is triggered
+                  type: object
+                highTemperatureThreshold:
+                  description: high threshold to trigger Climate React
+                  type: number
+                highTemperatureState:
+                  description: desired state when high threshold is triggered
+                  type: object
+              example:
+                enabled: true
+                lowTemperatureThreshold: 21
+                lowTemperatureState: {"on": false}
+                highTemperatureThreshold: 25
+                highTemperatureState: {"on": true, mode: "cool"}
+
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: Success
   '/pods/{device_id}/timer/':
     servers:
       - url: https://home.sensibo.com/api/v1/
